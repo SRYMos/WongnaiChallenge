@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<style>
+	a {text-decoration: underline;cursor:pointer;color:blue;}
+</style>
+<body>
+	<br>
+	<form action="" method="get" id="formSearch">
+		<p>Query review by ID: </p>
+    	<p><input type="text" id="inputId" onkeyup="getId()"/><input type="submit" value="Get" /></p>
+        
+    </form>
+    <div style="padding: 50px 50px 10px;border: 1px solid #000;" id="div1">
+    	<p id="textId" th:utext="${review.reviewID}" style="visibility:hidden;"></p>
+		<p th:utext="${review.review}" id="txReview"></p><br>
+		<textarea id="txd" th:utext="${review.review}" cols="100" rows="15" style="display:none;" onkeyup="editTx();"></textarea><br>
+    	<a id="btEdit" onclick="editTextReview()">Edit</a>
+    	<form action="" method="post" id="formSave">
+    		
+    		<input type="submit" value="Save" />
+    	</form>
+    </div>
+</body>
+<script>
+function getId() {
+    var inputId = document.getElementById("inputId").value;
+    document.getElementById("formSearch").action = "/reviews/"+inputId;
+}
+
+function btHidden(){
+	var txReview = document.getElementById("txReview").innerHTML;
+	if(txReview == ''){
+		document.getElementById("btEdit").style.visibility = "hidden";
+	}else{
+		document.getElementById("btEdit").style.visibility = "none";
+	}
+}
+window.onload = btHidden;
+
+function editTextReview(){
+	document.getElementById("txd").style.display = "block";
+	
+	var textId = document.getElementById("textId").innerHTML;
+	document.getElementById("formSave").action = "/reviews/"+textId;
+	document.getElementById("formSave").style.display = "block";
+	
+	document.getElementById("btEdit").style.display = "none";
+}
+
+function editTx(){
+	document.getElementById("txReview").innerHTML = document.getElementById("txd").value;
+}
+</script>
+</html>

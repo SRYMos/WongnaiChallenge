@@ -1,0 +1,57 @@
+version: "3.1"
+services:
+    db:
+        image: mysql:latest
+#        command: --init-file /data/application/init.sql
+        ports: 
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: data_wongnai
+            MYSQL_ROOT_PASSWORD: test
+        volumes:
+#            - ./init.sql:/data/application/init.sql
+            - persistent:/var/lib/mysql
+        networks:
+            - default
+            
+    #######################################
+# SPRING BOOT
+#######################################            
+            
+#    myapp-main:
+#      restart: always
+#      build:
+#        context: ./
+#        dockerfile: Dockerfile
+#      expose:
+#        - "5555"
+#      ports:
+#        - 5555:5555
+#      links:
+#        - db
+#      environment:
+#        DATABASE_HOST: db
+#        DATABASE_USER: root
+#        DATABASE_PASSWORD: test
+#        DATABASE_NAME: data_wongnai
+#        DATABASE_PORT: 3306
+#      networks:
+#            - default
+      
+
+#######################################
+# PHP MY ADMIN
+#######################################
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links: 
+            - db
+        ports:
+            - 8080:80
+        environment:
+            MYSQL_USER: user
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+
+volumes:
+    persistent:

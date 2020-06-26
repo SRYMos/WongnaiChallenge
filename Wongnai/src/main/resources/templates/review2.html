@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<br>
+    <p>Query review by ID: </p><input type="text" id="id" onkeyup="getTextId()"/>
+    <a href="" id="inputId">Get</a>
+    <p id="tx" th:utext="${review.review}"></p>
+</body>
+<script>
+function getTextId() {
+	var id = document.getElementById("id").value;
+	var h = document.getElementById("inputId");
+	h.href = "/reviews/"+id;
+}
+</script>
+</html>

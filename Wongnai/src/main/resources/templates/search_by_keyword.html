@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>Search Reviews</title>
+</head>
+<body>
+	<div id="app">
+    <v-app>
+      <v-main>
+        <v-container>
+			<v-row>
+            	<v-col col="6" md="2">
+              		<v-text-field v-model="reviewKeyword" label="Keyword"></v-text-field>
+            	</v-col>
+            	<v-col col="3" md="1">
+              		<v-btn large @click="getKeyword" width="100%">search</v-btn>
+            	</v-col>
+            	<v-col col="3" md="2">
+              		<v-btn large color="primary" href="/">search by id</v-btn>
+            	</v-col>
+			</v-row>
+			<div  v-for="review in reviewList">
+				<v-alert v-if="review.reviewID==0" v-html="review.review" dense outlined type="error" style="padding: 40px;"></v-alert>
+				<v-card v-else class="mx-auto" color="#1867C0" dark>
+					<div style="padding: 40px;">
+						<span v-html="review.review" style="white-space: pre-line;"> </span>
+					</div>
+				</v-card>
+				<br>
+			</div>
+		</v-container>
+      </v-main>
+    </v-app>
+  </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script>
+	new Vue({
+      	el: '#app',
+		  vuetify: new Vuetify(),
+		  data() {
+			  return {
+				reviewKeyword: "",
+				reviewList: null
+			  }
+		  },
+		  methods: {
+			getKeyword() {
+			const rqGet = {
+				method: "GET"
+			}
+			fetch("/reviews?query=" + this.reviewKeyword, rqGet)
+				.then(response => {
+				return response.json()
+				})
+				.then(reviewList => {
+				this.reviewList = reviewList
+				})
+			}
+		}
+	})
+</script>
+</html>

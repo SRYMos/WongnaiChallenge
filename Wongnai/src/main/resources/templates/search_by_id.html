@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>Search Reviews</title>
+</head>
+
+<body>
+  <div id="app">
+    <v-app>
+      <v-main>
+        <v-container>
+          <v-row>
+            <v-col col="6" md="2">
+              <v-text-field v-model="reviewId" label="ID"></v-text-field>
+            </v-col>
+            <v-col col="3" md="1">
+              <v-btn large @click="getId" width="100%">search</v-btn>
+            </v-col>
+            <v-col col="3" md="2">
+              <v-btn large color="primary" href="/searchKeyword">search by keyword</v-btn>
+            </v-col>
+            <v-col col="12" md="12">
+              <span v-if="this.editText==false" style="white-space: pre-line;">{{this.reviewText}}</span>
+              <v-textarea v-else v-model="reviewText" rows="25"></v-textarea>
+            </v-col>
+            <v-col col="12" md="12">
+              <v-btn v-if="this.editBtn==true" large @click="editTextReview">Edit</v-btn>
+              <v-btn v-if="this.saveBtn==true" large @click="saveTextReview">Save</v-btn>
+              <v-btn v-if="this.cancelBtn==true" large @click="cancelTextReview">Cancel</v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-main>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          reviewId: "",
+          reviewText: "",
+          editText: false,
+          editBtn: false,
+          saveBtn: false,
+          cancelBtn: false
+        }
+      },
+      methods: {
+        getId() {
+          const rqGet = {
+            method: "GET"
+          }
+          fetch("/reviews/" + this.reviewId, rqGet)
+            .then(response => {
+              return response.json()
+            })
+            .then(review => {
+              this.reviewText = review.review
+              this.editText = false
+              this.editBtn = true
+              this.saveBtn = false
+              this.cancelBtn = false
+            })
+        },
+        editTextReview() {
+          this.editText = true
+          this.editBtn = false
+          this.saveBtn = true
+          this.cancelBtn = true
+        },
+        saveTextReview() {
+          const rqPost = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reviewID: this.reviewId, review: this.reviewText })
+          }
+          fetch("/reviews/" + this.reviewId, rqPost)
+            .then(response => {
+              return response.json()
+            })
+            .then(review => {
+              this.reviewText = review.review
+              this.saveBtn = false
+              this.cancelBtn = false
+              this.editText = false
+              this.editBtn = true
+              alert("Success")
+            })
+        },
+        cancelTextReview() {
+          this.saveBtn = false
+          this.cancelBtn = false
+          this.editText = false
+          this.editBtn = true
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
